@@ -39,7 +39,7 @@
 #define BTN_PIN		PIND
 #define BTN_DDR		DDRD
 
-#define LED_MAX		255 //number of steps in each color, affects brightness and speed
+#define LED_MAX		63 //number of steps in each color, affects brightness and speed
 #define LED_MAX_PWM	LED_MAX*LED_MAX
 
 char led_phase = 0; //The phase is what color shifting is going on 0:R-Y, 1:Y-G, 2:G-C etc
