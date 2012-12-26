@@ -84,11 +84,12 @@ int main(void)
 
 	sei();
 	while(1){
-		LED_R_PORT |= LED_R;
+		LED_R_PORT &= ~LED_R;
 		LED_G_PORT |= LED_G;
 		LED_B_PORT |= LED_B;
 		_delay_ms(500);
 		LED_G_PORT &= ~LED_G;
+		LED_R_PORT |= LED_R;
 		_delay_ms(500);
 
 	}
