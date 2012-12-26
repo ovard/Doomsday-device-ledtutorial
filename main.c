@@ -57,6 +57,7 @@ int main(void)
 	LED_R_DDR |= LED_R;
 	LED_G_DDR |= LED_G;
 	LED_B_DDR |= LED_B;
+	LED_B_PORT |= LED_B;
 	
 	//Set up as 16-bit PWM
 	//TCCR1A = (1<<COM1A1)|(1<<COM1A0)|(1<<COM1B1)|(1<<COM1B0)|(1<<COM1C1)|(1<<COM1C0)|(1<<WGM11);
@@ -86,7 +87,7 @@ int main(void)
 	while(1){
 		LED_R_PORT &= ~LED_R;
 		LED_G_PORT |= LED_G;
-		LED_B_PORT |= LED_B;
+		
 		_delay_ms(500);
 		LED_G_PORT &= ~LED_G;
 		LED_R_PORT |= LED_R;
@@ -98,7 +99,7 @@ int main(void)
 //--- HWB Button interrupt ---//
 ISR(INT7_vect)
 {
-
+	LED_B_PORT ^= LED_B;
 }
 
 //--- Timer0 interrupt ---//
