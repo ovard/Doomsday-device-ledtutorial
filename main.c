@@ -59,9 +59,9 @@ int main(void)
 	LED_B_DDR |= LED_B;
 	
 	//Set up as 16-bit PWM
-	TCCR1A = (1<<COM1A1)|(1<<COM1A0)|(1<<COM1B1)|(1<<COM1B0)|(1<<COM1C1)|(1<<COM1C0)|(1<<WGM11);
-	TCCR1B = (1<<WGM12)|(1<<WGM13)|(1<<CS10);
-	ICR1 = 0xFFFF;
+	//TCCR1A = (1<<COM1A1)|(1<<COM1A0)|(1<<COM1B1)|(1<<COM1B0)|(1<<COM1C1)|(1<<COM1C0)|(1<<WGM11);
+	//TCCR1B = (1<<WGM12)|(1<<WGM13)|(1<<CS10);
+	//ICR1 = 0xFFFF;
 	
 	//Set initial values
 	LED_R_PWM = LED_MAX_PWM;
@@ -69,8 +69,8 @@ int main(void)
 	LED_B_PWM = 0x0;
 
 	//--- Init timer0 ---//
-	TCCR0B = (1<<CS00)|(0<<CS01)|(1<<CS02); //Select clock source
-	TIMSK0 = (1<<TOIE0); //Enable overflow interrupt
+	//TCCR0B = (1<<CS00)|(0<<CS01)|(1<<CS02); //Select clock source
+	//TIMSK0 = (1<<TOIE0); //Enable overflow interrupt
 
 	//--- Init button ---//
 	//Has external pullup due to HWB
@@ -78,19 +78,19 @@ int main(void)
 	EIMSK |= (1<<INT7); //Enable interrupt 7
 
 	//--- Set all GPIO as output ---//
-	DDRB = (1<<PB7) | (1<<PB6) | (1<<PB5) | (1<<PB4) | (1<<PB3) | (1<<PB2) | (1<<PB1) | (1<<PB0);
-	DDRC = (1<<PC7) | (1<<PC6) | (1<<PC5) | (1<<PC4) | (1<<PC2);
-	DDRD = (0<<PD7) | (1<<PD6) | (1<<PD5) | (1<<PD4) | (1<<PD3) | (1<<PD2) | (1<<PD1) | (1<<PD0);
+	//DDRB = (1<<PB7) | (1<<PB6) | (1<<PB5) | (1<<PB4) | (1<<PB3) | (1<<PB2) | (1<<PB1) | (1<<PB0);
+	//DDRC = (1<<PC7) | (1<<PC6) | (1<<PC5) | (1<<PC4) | (1<<PC2);
+	//DDRD = (0<<PD7) | (1<<PD6) | (1<<PD5) | (1<<PD4) | (1<<PD3) | (1<<PD2) | (1<<PD1) | (1<<PD0);
 
 	sei();
 	while(1){
-		//--- Output test, to see that all GPIO has contact with PCB ---///
-		output_test = output_test << 1;
-		if (output_test == 0) output_test = 1;
-		PORTB = output_test;
-		PORTC = 0b11110100 & output_test;
-		PORTD = BTN | output_test;
+		LED_R_PORT |= LED_R;
+		LED_G_PORT |= LED_G;
+		LED_B_PORT |= LED_B;
 		_delay_ms(500);
+		LED_G_PORT &= ~LED_G;
+		_delay_ms(500);
+
 	}
 }
 
