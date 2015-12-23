@@ -18,6 +18,9 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
+#include <stdio.h>
+#include "lcdlibrary/lcd.c"
+#include "custchars.c"
 
 #define LED_R		(1<<PC6)
 #define LED_R_PORT	PORTC
@@ -29,22 +32,22 @@
 #define LED_G_DDR	DDRC
 #define LED_G_PWM	OCR1B
 
-#define LED_B		(1<<PB7)
-#define LED_B_PORT	PORTB
-#define LED_B_DDR	DDRB
-#define LED_B_PWM	OCR1C
-
 #define BTN		(1<<PD7)
 #define BTN_PORT	PORTD
 #define BTN_PIN		PIND
 #define BTN_DDR		DDRD
 
+<<<<<<< HEAD
 #define LED_MAX		63 //number of steps in each color, affects brightness and speed
 #define LED_MAX_PWM	LED_MAX*LED_MAX
 
 char led_phase = 0; //The phase is what color shifting is going on 0:R-Y, 1:Y-G, 2:G-C etc
 unsigned char led_step = 0; //step in current phase
 unsigned char output_test=0; //step in PGIO output test
+=======
+//Create a charecter stream for stdout
+FILE lcd_str = FDEV_SETUP_STREAM(lcd_putc, NULL, _FDEV_SETUP_WRITE);
+>>>>>>> refs/remotes/ornotermes/batron-display
 
 int main(void)
 {
@@ -53,6 +56,7 @@ int main(void)
 	CLKPR = (1<<CLKPCE);
 	CLKPR = 0;
 
+<<<<<<< HEAD
 	//--- Init LEDs ---//
 	LED_R_DDR |= LED_R;
 	LED_G_DDR |= LED_G;
@@ -72,12 +76,26 @@ int main(void)
 	//--- Init timer0 ---//
 	//TCCR0B = (1<<CS00)|(0<<CS01)|(1<<CS02); //Select clock source
 	//TIMSK0 = (1<<TOIE0); //Enable overflow interrupt
+=======
+	//negative contrast voltage generator
+	DDRB = (1<<PB7);
+	TCCR1A = (1<<COM1C0);
+	TCCR1B = (1<<WGM12)|(1<<CS11)|(1<<CS10);
+	OCR1A = 10;
+>>>>>>> refs/remotes/ornotermes/batron-display
 
 	//--- Init button ---//
 	//Has external pullup due to HWB
 	EICRB |= (1<<ISC71); //trigger interrupt on falling edge
 	EIMSK |= (1<<INT7); //Enable interrupt 7
+	
+	lcd_init(LCD_DISP_ON);
+	custchars(); //upload custom chars
+	lcd_clrscr();
+	
+	stdout = stdin = &lcd_str; //Connect stdout to stream
 
+<<<<<<< HEAD
 	//--- Set all GPIO as output ---//
 	//DDRB = (1<<PB7) | (1<<PB6) | (1<<PB5) | (1<<PB4) | (1<<PB3) | (1<<PB2) | (1<<PB1) | (1<<PB0);
 	//DDRC = (1<<PC7) | (1<<PC6) | (1<<PC5) | (1<<PC4) | (1<<PC2);
@@ -111,34 +129,13 @@ ISR(TIMER0_OVF_vect)
 {
 	//--- LEDs are not linear, compensating by running them in 16bit PWM and giving them eponential value (up to 255*255).
 	int led_val = led_step * led_step;
+=======
+	sei(); //Set interrupt
+>>>>>>> refs/remotes/ornotermes/batron-display
 	
-	switch (led_phase)
-	{
-	case 0: //Red is max, increase green
-		LED_G_PWM = led_val;
-		break;
-	case 1: //Red and green is max, decrease red
-		LED_R_PWM = LED_MAX_PWM - led_val ;
-		break;
-	case 2: //Green is max, increase blue
-		LED_B_PWM = led_val;
-		break;
-	case 3: //Green and blue is max, decrease green
-		LED_G_PWM = LED_MAX_PWM - led_val;
-		break;
-	case 4: //Blue is max, increase red
-		LED_R_PWM = led_val;
-		break;
-	case 5: //Red and blue is max, decrease blue
-		LED_B_PWM = LED_MAX_PWM - led_val;
-		break;
-	}
+	printf("Hello world!");
 	
-	led_step++; //Next step in current phase
-	if (led_step == LED_MAX) //End of current phase
+	while(1)
 	{
-		led_step = 0;
-		led_phase++; //Next phase
-		if (led_phase > 5) led_phase = 0; //Go from phase 0 to phase 5 and start over.
 	}
 }
