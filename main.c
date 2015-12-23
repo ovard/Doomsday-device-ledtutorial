@@ -99,7 +99,11 @@ int main(void)
 //--- HWB Button interrupt ---//
 ISR(INT7_vect)
 {
+<<<<<<< HEAD
 	LED_B_PORT ^= LED_B;
+=======
+TIMSK0 ^= (1<<TOIE0);
+>>>>>>> refs/remotes/ornotermes/master
 }
 
 //--- Timer0 interrupt ---//
